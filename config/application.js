@@ -57,7 +57,7 @@ const APP_CONFIG = {
         },
         {
           id: 'main',
-          url: 'http://client-ui.sixi.com/main/home/',
+          url: 'http://172.30.34.114:8082/',
           option: {
             minWidth: 380,
             minHeight: 600,

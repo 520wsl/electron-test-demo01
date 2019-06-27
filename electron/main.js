@@ -16,7 +16,7 @@ let isReady = false;
 let win;
 
 // 添加全局
-
+// 2019年6月27日 10点12分 这个blobal是全局变量，并不是绑定到window节点下面的属性。
 const AddGlobal = (key, valFun) => {
     /**
      *  Object.defineProperty() 方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象。
@@ -33,7 +33,7 @@ const AddGlobal = (key, valFun) => {
      *      enumerable 当且仅当该属性的enumerable为true时，该属性才能够出现在对象的枚举属性中。默认为 false。
      */
     /**
-     *   toUpperCase() 方法用于把字符串转换为大写。
+     *  toUpperCase() 方法用于把字符串转换为大写。
      *  资料链接: http://www.w3school.com.cn/jsref/jsref_toUpperCase.asp
      *  语法： stringObject.toUpperCase()
      */
@@ -48,55 +48,91 @@ const AddGlobal = (key, valFun) => {
     });
 };
 
-function createWindow() {
-    // 创建浏览器窗口。
-    win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        webPreferences: {
-            nodeIntegration: true
+const __init = () => {
+    const WindowManagement = require('./js/WindowManagement');
+    let createWindow = () => {
+        WindowManagement.start();
+    };
+
+    if (isReady) {
+        console.log('*-*-*-*-*--*-*-*-*-*-*--isReady');
+        createWindow();
+    } else {
+        // Electron 会在初始化后并准备
+        // 创建浏览器窗口时，调用这个函数。
+        // 部分 API 在 ready 事件触发后才能使用。
+        // app.on('ready', createWindow);
+        app.on('ready', createWindow);
+    }
+
+    app.on('activate', () => {
+        // 在macOS上，当单击dock图标并且没有其他窗口打开时，
+        // 通常在应用程序中重新创建一个窗口。
+        if (win === null) {
+            createWindow()
         }
     });
 
-    // 加载index.html文件
-    win.loadFile('electron/index.html')
+    // 当全部窗口关闭时退出。
+    app.on('window-all-closed', () => {
+        // 在 macOS 上，除非用户用 Cmd + Q 确定地退出，
+        // 否则绝大部分应用及其菜单栏会保持激活。
+        if (process.platform !== 'darwin') {
+            app.quit()
+        }
+    });
+};
 
-    // 打开开发者工具
-    win.webContents.openDevTools()
-
-    // 当 window 被关闭，这个事件会被触发。
-    win.on('closed', () => {
-        // 取消引用 window 对象，如果你的应用支持多窗口的话，
-        // 通常会把多个 window 对象存放在一个数组里面，
-        // 与此同时，你应该删除相应的元素。
-        win = null
-    })
-}
+// function createWindow() {
+//     // 创建浏览器窗口。
+//     win = new BrowserWindow({
+//         width: 800,
+//         height: 600,
+//         webPreferences: {
+//             nodeIntegration: true
+//         }
+//     });
+//
+//     // 加载index.html文件
+//     win.loadFile('electron/index.html')
+//
+//     // 打开开发者工具
+//     win.webContents.openDevTools()
+//
+//     // 当 window 被关闭，这个事件会被触发。
+//     win.on('closed', () => {
+//         // 取消引用 window 对象，如果你的应用支持多窗口的话，
+//         // 通常会把多个 window 对象存放在一个数组里面，
+//         // 与此同时，你应该删除相应的元素。
+//         win = null
+//     })
+// }
 
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
-app.on('ready', createWindow);
-// app.on('ready', () => {
-//     isReady = true
-// });
-
-// 当全部窗口关闭时退出。
-app.on('window-all-closed', () => {
-    // 在 macOS 上，除非用户用 Cmd + Q 确定地退出，
-    // 否则绝大部分应用及其菜单栏会保持激活。
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+// app.on('ready', createWindow);
+app.on('ready', () => {
+    isReady = true
 });
 
-app.on('activate', () => {
-    // 在macOS上，当单击dock图标并且没有其他窗口打开时，
-    // 通常在应用程序中重新创建一个窗口。
-    if (win === null) {
-        createWindow()
-    }
-});
 
 // 在这个文件中，你可以续写应用剩下主进程代码。
 // 也可以拆分成几个文件，然后用 require 导入。
+
+
+// 导入config
+const Application = require('./js/Application.js');
+// 将各种 config 挂载到global上。然后初始化窗口。
+Application.load().then(c => {
+    const configStr = JSON.stringify(c);
+    // app config 挂载到 global
+    AddGlobal('APP_CONFIG', () => JSON.parse(configStr));
+    // electron config 挂载到 global
+    AddGlobal('ELECTRON_CONFIG', () => JSON.parse(configStr).electron);
+    // console.log(global._APP_CONFIG_)
+    __init();
+}).catch((e) => {
+    console.error(e);
+    __init();
+});
