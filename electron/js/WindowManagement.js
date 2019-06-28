@@ -1,4 +1,4 @@
-const Utils = require('../libs/utils');
+const Utils = require('./utils');
 const fs = require('fs');
 /**
  * Menu 菜单 https://electronjs.org/docs/api/menu#menusetapplicationmenumenu
@@ -8,7 +8,6 @@ const Application = require('./Application');
 const CONFIG = Application.get();
 const CONFIG_WINDOW = CONFIG.electron.WINDOW;
 const DEFAULT_OPTION = JSON.stringify(CONFIG_WINDOW.DEFAULT_OPTION);
-
 
 // window 菜单管理控制器
 const WindowManagementController = {
@@ -38,20 +37,21 @@ const WindowManagementController = {
     },
     getWin: ({id}) => {
         if (Utils.string.isBlank(id)) return null;
-        const windoNode = App.windowNodePool[id];
-        if (!windoNode) return null;
-        return windoNode.win;
+        const windowNode = App.windowNodePool[id];
+        if (!windowNode) return null;
+        return windowNode.win;
     },
     initWinEvent: (id) => {
         const windowNode = App.windowNodePool[id];
         if (!windowNode) return;
         const win = windowNode.win;
         if (CONFIG.isDev) {
-            win.webContents.openDevTools()
+            win.webContents.openDevTools();
         }
+
         win.on('closed', () => {
             delete App.windowNodePool[id];
-        })
+        });
     },
     open: ({id, option = {}, config = {}, url, file}) => {
         const windowNodePool = App.windowNodePool;
@@ -63,7 +63,7 @@ const WindowManagementController = {
 
         let windowNode = windowNodePool[id];
         if (!windowNode) {
-            let _option = JSON.parse(DEFAULT_OPTION)
+            let _option = JSON.parse(DEFAULT_OPTION);
             Utils.object.merge(_option, option);
             _option[App.ID_KEY] = id;
 
@@ -119,22 +119,19 @@ const WindowManagementController = {
         win.focus()
     },
     showGroup: ({group}) => {
-        if (Utils.string.isNotBlank(group)) {
-            console.log(group)
-        }
+        if (Utils.string.isBlank(group)) console.log(group);
         const windowNodePool = App.windowNodePool;
         for (let id in windowNodePool) {
             if (!windowNodePool.hasOwnProperty(id) || !windowNodePool[id] || windowNodePool[id].config.group !== group) continue;
             console.log(group, id, windowNodePool[id].config.group);
             App.show({id})
         }
-
     },
     hide: ({id}) => {
         const win = App.getWin({id});
         if (!win) return;
         win.hide();
-        win.setSkipTaskbar(true)
+        win.setSkipTaskbar(true);
     },
     switchMax: ({id}) => {
         const win = App.getWin({id});
@@ -148,7 +145,7 @@ const WindowManagementController = {
     exit: ({id}) => {
         const win = App.getWin({id});
         if (!win) return;
-        win.destroy()
+        win.destroy();
         delete App.windowNodePool[id];
     },
     exitAll: () => {
@@ -214,7 +211,7 @@ const WindowManagementController = {
         })
     },
     isEmpty: () => {
-        return Utils.map.isNotEmpty(App.windowNodePool);
+        return Utils.map.isEmpty(App.windowNodePool);
     },
     toPDF: ({id, fileName = 'export', fileOptions = {}, PDFOptions = {}}) => {
         return new Promise((resolve, reject) => {
@@ -224,31 +221,30 @@ const WindowManagementController = {
             dialog.showSaveDialog({
                 defaultPath: fileName,
                 ...fileOptions
-            }, (fileName) => {
-                if (Utils.string.isBlank(fileName)) {
+            }, (filename) => {
+                if (Utils.string.isBlank(filename)) {
                     reject('userCanceled');
                     return;
                 }
                 win.webContents.printToPDF({
                     marginsType: 1,
-                    printBackgrpund: true,
+                    printBackground: true,
                     ...PDFOptions
                 }, (error, data) => {
                     if (error) {
                         reject(error);
                         return;
                     }
-                    fs.writeFile(fileName, data, (error) => {
-                            if (error) {
-                                reject(error);
-                                return;
-                            }
-                            resolve(fileName);
+                    fs.writeFile(filename, data, (error) => {
+                        if (error) {
+                            reject(error);
+                            return;
                         }
-                    )
+                        resolve(filename);
+                    })
                 })
             })
-        })
+        });
     }
 };
 
