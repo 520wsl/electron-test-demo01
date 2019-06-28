@@ -1,4 +1,5 @@
 const Utils = require('../libs/utils');
+const fs = require('fs');
 /**
  * Menu 菜单 https://electronjs.org/docs/api/menu#menusetapplicationmenumenu
  */
@@ -157,6 +158,11 @@ const WindowManagementController = {
             delete windowNodePool[id];
         })
     },
+    openAllDevTools: () => {
+        App.windowNodePoolForEach((windowNode) => {
+            windowNode.win.webContents.openDevTools();
+        })
+    },
     on: ({id, eventName, fn}) => {
         const windowNode = App.windowNodePool[id];
         if (!windowNode) return;
@@ -207,6 +213,43 @@ const WindowManagementController = {
             fn(windowNodePool[id], id, i)
         })
     },
+    isEmpty: () => {
+        return Utils.map.isNotEmpty(App.windowNodePool);
+    },
+    toPDF: ({id, fileName = 'export', fileOptions = {}, PDFOptions = {}}) => {
+        return new Promise((resolve, reject) => {
+            const win = App.getWin({id});
+            if (!win) return;
+            if (!fileName.toLocaleLowerCase().endsWith('.pdf')) fileName += '.pdf';
+            dialog.showSaveDialog({
+                defaultPath: fileName,
+                ...fileOptions
+            }, (fileName) => {
+                if (Utils.string.isBlank(fileName)) {
+                    reject('userCanceled');
+                    return;
+                }
+                win.webContents.printToPDF({
+                    marginsType: 1,
+                    printBackgrpund: true,
+                    ...PDFOptions
+                }, (error, data) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    fs.writeFile(fileName, data, (error) => {
+                            if (error) {
+                                reject(error);
+                                return;
+                            }
+                            resolve(fileName);
+                        }
+                    )
+                })
+            })
+        })
+    }
 };
 
 let App = WindowManagementController;
