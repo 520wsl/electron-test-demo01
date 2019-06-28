@@ -1,4 +1,4 @@
-const Utils = require('./utils');
+const Utils = require('../libs/utils');
 const fs = require('fs');
 /**
  * Menu 菜单 https://electronjs.org/docs/api/menu#menusetapplicationmenumenu
