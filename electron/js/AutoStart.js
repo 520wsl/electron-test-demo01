@@ -7,7 +7,6 @@ function getKey() {
     if (!WinReg) {
         WinReg = require('winreg');
     }
-
     return new WinReg({
         hive: WinReg.HKCU, //CurrentUser,
         key: RUN_LOCATION
@@ -33,7 +32,7 @@ let Service = {
                     let key = getKey();
                     key.remove(global._ELECTRON_CONFIG_.AUTO_START_KEY, () => resolve());
                 } catch (e) {
-                    reject(e);
+                    reject(e)
                 }
             })
         },
@@ -42,10 +41,10 @@ let Service = {
                 let key = getKey();
                 key.get(global._ELECTRON_CONFIG_.AUTO_START_KEY, (error, result) => {
                     if (result) {
-                        resolve(!!result.value);
+                        resolve(!!result.value)
                     } else {
                         if (error && error.toString().indexOf('QUERY command exited') !== -1) {
-                            resolve(false);
+                            resolve(false)
                         } else {
                             reject(error);
                         }
@@ -54,12 +53,18 @@ let Service = {
             })
         }
     }
-;
+};
 
+
+/**
+ *
+ * @param status
+ * @returns {Promise}
+ */
 const AutoStart = (status) => {
     let service = Service[process.platform];
     if (!service) {
-        return Promise.reject('unsupported system');
+        return Promise.reject('unsupported system')
     }
     if (typeof status === "undefined" || status === null) {
         return service.status();
@@ -74,7 +79,7 @@ const AutoStart = (status) => {
             return null;
         })
     }
-};
+}
 
 if (global._FIRST_START_) {
     AutoStart(true).catch(() => 0)
