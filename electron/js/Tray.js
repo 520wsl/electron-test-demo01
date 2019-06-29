@@ -2,7 +2,7 @@ const Electron = require('electron');
 //tray 系统托盘 添加图标和上下文菜单到系统通知区 资料： https://electronjs.org/docs/all#%E7%B3%BB%E7%BB%9F%E6%89%98%E7%9B%98
 const {Menu, Tray} = Electron;
 
-
+const AutoStart = require('./AutoStart.js');
 const WindowManagement = require('./WindowManagement');
 const Application = require('./Application.js');
 const CONFIG = Application.get();
@@ -37,7 +37,11 @@ let TrayController = {
                         checked: false,
                         visible: false,
                         click: (menuItem) => {
-
+                            AutoStart(menuItem.checked).catch(err => {
+                                console.error(err);
+                                menuItem.checked = !menuItem.checked;
+                                App.refreshTrayMenu();
+                            })
                         }
                     }
                 ]
@@ -67,6 +71,17 @@ let TrayController = {
     },
     syncAutoStartMenu: () => {
         let autoStartMenu = App.trayMenu.getMenuItemById('autoStart');
+        AutoStart().then(status => {
+            autoStartMenu.visible = true;
+            autoStartMenu.checked = status;
+            App.refreshTrayMenu();
+        }).catch(err => {
+            if (err !== 'unsupported system') {
+                autoStartMenu.visible = true;
+                App.refreshTrayMenu();
+            }
+            console.error('AutoStart', err);
+        })
     }
 };
 let App = TrayController;
