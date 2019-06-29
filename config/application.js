@@ -16,7 +16,9 @@ const APP_CONFIG = {
     },
     electron: {
         SCRIPT_VERSION: '0.1.5',
+        // logo
         APP_LOGO_IMG,
+        // logo min
         APP_LOGO_MIN_IMG: '${FILE_ROOT_PATH}public/sixi.png',
         //自动更新地址
         AUTO_UPDATER_URL: '${BASE_OSS}/electron',

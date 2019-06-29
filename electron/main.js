@@ -6,14 +6,14 @@ process.env.NODE_ENV = isDev ? "development" : "production";
 // 导入electron
 const Electron = require('electron');
 // globalShortcut 模块可以在操作系统中注册/注销全局快捷键, 以便可以为操作定制各种快捷键。
-const {app, globalShortcut, BrowserWindow} = Electron;
+const {app, globalShortcut} = Electron;
 
 //
 let isReady = false;
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
-let win;
+// let win;
 
 // 添加全局
 // 2019年6月27日 10点12分 这个blobal是全局变量，并不是绑定到window节点下面的属性。
@@ -51,7 +51,14 @@ const AddGlobal = (key, valFun) => {
 const __init = () => {
     const WindowManagement = require('./js/WindowManagement');
     let createWindow = () => {
+        // 初始化窗口
         WindowManagement.start();
+        // 添加全局快捷键  CommandOrControl+alt+shift+i+v 打开所有窗口控制台
+        globalShortcut.register('CommandOrControl+alt+shift+i', () => {
+            globalShortcut.register('CommandOrControl+alt+shift+v', () => {
+                WindowManagement.openAllDevTools()
+            })
+        })
     };
 
     if (isReady) {
@@ -68,8 +75,11 @@ const __init = () => {
     app.on('activate', () => {
         // 在macOS上，当单击dock图标并且没有其他窗口打开时，
         // 通常在应用程序中重新创建一个窗口。
-        if (win === null) {
-            createWindow()
+        // if (win === null) {
+        //     createWindow()
+        // }
+        if(WindowManagement.isEmpty()){
+            createWindow();
         }
     });
 

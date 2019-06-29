@@ -15,6 +15,7 @@ const WindowManagementController = {
     ID_KEY: '__id__',
     // 窗口资源池
     windowNodePool: {},
+    // 初始化窗口
     start: () => {
         /**
          * Menu.setApplicationMenu(menu) 当在MacOS、Windows、Linux中使用menu设置程序菜单时，会设置在各个程序窗体的顶层。
