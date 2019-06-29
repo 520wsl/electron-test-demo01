@@ -3,12 +3,13 @@ const Electron = require('electron');
 const {Menu, Tray} = Electron;
 
 const AutoStart = require('./AutoStart.js');
+// const UpdateApp = require('./UpdateApp.js');
 const WindowManagement = require('./WindowManagement');
 const Application = require('./Application.js');
 const CONFIG = Application.get();
 
 
-let TrayController = {
+const TrayController = {
     trayMenu: null,
     tray: null,
     init: () => {
@@ -24,6 +25,7 @@ let TrayController = {
                 id: 'up',
                 label: '更新',
                 click: () => {
+                    // UpdateApp.check();
                 }
             },
             {
