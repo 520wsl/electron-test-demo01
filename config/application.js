@@ -1,16 +1,18 @@
 const Path = require('path');
 const FILE_ROOT_PATH = Path.join(__dirname, '../');
 
-const APP_LOGO_IMG = '${FILE_ROOT_PATH}public/logo.png';
+const APP_LOGO_IMG = `${FILE_ROOT_PATH}public/logo.png`;
+const BASE_OSS = 'https://custom-center.oss-cn-hangzhou.aliyuncs.com/customerCenter';
+const BASE_DOMAIN =  'chrome.open.sixi.com';
 
 const APP_CONFIG = {
     CONSTANT: {
-        BASE_OSS: 'https://custom-center.oss-cn-hangzhou.aliyuncs.com/customerCenter',
-        BASE_DOMAIN: 'chrome.open.sixi.com',
+        BASE_OSS,
+        BASE_DOMAIN,
         FILE_ROOT_PATH
     },
     FILE_ROOT_PATH,
-    APPLICATION_NET: '${BASE_OSS}/electron/application-net.js',
+    APPLICATION_NET: `${BASE_OSS}/electron/application-net.js`,
     APP_INFO: {
         APP_ID: 'clientPcServiceWindow'
     },
@@ -19,12 +21,12 @@ const APP_CONFIG = {
         // logo
         APP_LOGO_IMG,
         // logo min
-        APP_LOGO_MIN_IMG: '${FILE_ROOT_PATH}public/sixi.png',
+        APP_LOGO_MIN_IMG: `${FILE_ROOT_PATH}public/sixi.png`,
         //自动更新地址
-        AUTO_UPDATER_URL: '${BASE_OSS}/electron',
+        AUTO_UPDATER_URL: `${BASE_OSS}/electron`,
         //开机启动注册键
         AUTO_START_KEY: "SIXI_ELECTRONJS_CLIENT_AUTOSTART",
-        FILE_BASE: '${FILE_ROOT_PATH}document/',
+        FILE_BASE: `${FILE_ROOT_PATH}document/`,
         WINDOW: {
             DEFAULT_OPTION: {
                 minWidth: 500,
@@ -35,7 +37,7 @@ const APP_CONFIG = {
                 webPreferences: {
                     webSecurity: false,
                     allowRunningInsecureContent: true,
-                    preload: '${FILE_ROOT_PATH}electron/js/preload.js'
+                    preload: `${FILE_ROOT_PATH}electron/js/preload.js`
                 }
             },
             // 起始页窗口配置
@@ -44,7 +46,7 @@ const APP_CONFIG = {
                     // 窗口ID
                     id: 'background',
                     // 本地HTML文件
-                    file: '${FILE_ROOT_PATH}resource/background/index.html',
+                    file: `${FILE_ROOT_PATH}resource/background/index.html`,
                     // 窗口属性
                     option: {
                         width: 350,
@@ -106,7 +108,7 @@ const APP_CONFIG = {
             PRESET: {
                 SETTINGS: {
                     id: 'settings',
-                    file: '${FILE_ROOT_PATH}resource/settings/index.html',
+                    file: `${FILE_ROOT_PATH}resource/settings/index.html`,
                     option: {
                         minWidth: 380,
                         minHeight: 600,
@@ -124,7 +126,7 @@ const APP_CONFIG = {
         CONFUSION: ['QXs4OOgMXhkIJnwg54wEKg==', '3p8ImAMHmwfO7hMGNs6syA=='],
     },
     backgroundView: {
-        WEBSOCKET_URL: 'ws://${BASE_DOMAIN}/websocket',
+        WEBSOCKET_URL: `ws://${BASE_DOMAIN}/websocket`,
         //websocket断线重连间隔
         WEBSOCKET_RELINK_CD: 180000,
         //websocket断线重连间隔 随机添加的时间范围
@@ -141,7 +143,7 @@ const APP_CONFIG = {
         LOGIN_QR_CODE_STATUS_CD: 3500,
         SCOUT_URL: '${BASE_OSS}/scout',
         //API
-        API_BASE: "https://${BASE_DOMAIN}",
+        API_BASE: `https://${BASE_DOMAIN}`,
         OAUTH: {
             BASE: 'https://oauth.sixi.com',
             IFRAME: '/sso-login/index.html',

@@ -49,8 +49,12 @@ const AddGlobal = (key, valFun) => {
 };
 
 const __init = () => {
+    const Tray = require('./js/Tray');
     const WindowManagement = require('./js/WindowManagement');
     let createWindow = () => {
+        // 系统托盘
+        Tray.init();
+
         // 初始化窗口
         WindowManagement.start();
         // 添加全局快捷键  CommandOrControl+alt+shift+i+v 打开所有窗口控制台
@@ -78,7 +82,7 @@ const __init = () => {
         // if (win === null) {
         //     createWindow()
         // }
-        if(WindowManagement.isEmpty()){
+        if (WindowManagement.isEmpty()) {
             createWindow();
         }
     });
