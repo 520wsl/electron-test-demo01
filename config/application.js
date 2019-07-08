@@ -141,7 +141,7 @@ const APP_CONFIG = {
         LOGIN_QR_CODE_EXPIRED: 120000,
         //登录二维码状态获取间隔
         LOGIN_QR_CODE_STATUS_CD: 3500,
-        SCOUT_URL: '${BASE_OSS}/scout',
+        SCOUT_URL: `${BASE_OSS}/scout`,
         //API
         API_BASE: `https://${BASE_DOMAIN}`,
         OAUTH: {
