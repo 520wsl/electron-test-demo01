@@ -45,6 +45,7 @@ const GetFile = (url, writeStream) => {
     request.end();
 };
 
+console.log(process.platform + '_' + process.arch);
 const downPath = _config_.AUTO_UPDATER_URL + '/' + process.platform + '_' + process.arch;
 
 const UpdateApp = {
@@ -164,11 +165,12 @@ const Ui = {
         if (_notAvailableDialog) {
             _notAvailableDialog = false;
             dialog.showMessageBox({
+                // type: "error",//图标类型
                 title: '软件更新',
-                message: "已是最新版",
+                message: '已是最新版',
                 defaultId: 0,
-                buttons: ["知道了"],
-                icon: APP_LOGO_IMG
+                buttons: ["知道了"],//下方显示的按钮
+                icon: APP_LOGO_IMG //图标
             })
         }
     },
@@ -183,6 +185,7 @@ const Ui = {
             cb()
         } else {
             dialog.showMessageBox({
+                // type: "error",//图标类型
                 title: '软件更新',
                 message: `应用${type}有新的版本>${version}` + (detail ? `\n${detail}` : ''),
                 defaultId: 0,
@@ -192,7 +195,7 @@ const Ui = {
             }, function (index) {
                 switch (index) {
                     case 0: {
-                        cb()
+                        cb();
                         break;
                     }
                     case -1:
@@ -210,7 +213,7 @@ const Ui = {
             title: '更新包下载完成，开始安装',
             icon: APP_LOGO_IMG
         }).show();
-        cb()
+        cb();
     }
 };
 
