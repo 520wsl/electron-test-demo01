@@ -19,6 +19,34 @@
         "start": "electron . -run-dev",
         "dev": "npm run serve && electron . -run-dev"
     },
+    "build": {
+        "appId": "md",
+        "productName": "狂龍科技",
+        "copyright": "Copyright@2019-2022 All rights reserved ${author}",
+        "artifactName": "md_${os}_${version}.${ext}",
+        "win": {
+            "icon": "public/logo.png"
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": true,
+            "allowToChangeInstallationDirectory": true,
+            "menuCategory": true
+        },
+        "linux": {
+            "icon": "public/logo.png",
+            "category": "Office"
+        },
+        "publish": [
+            {
+                "provider": "generic",
+                "url": "https://custom-center.oss-cn-hangzhou.aliyuncs.com/customerCenter/electron"
+            }
+        ],
+        "directories": {
+            "buildResources": "electron/build/"
+        }
+    },
     "dependencies": {
         "core-js": "^2.6.5",
         "systeminformation": "^4.12.2",
